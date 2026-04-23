@@ -461,7 +461,7 @@
     "voltage": "220-240V",
     "applications": ["Living Room", "Master Bedroom", "Office", "Boardroom"],
     "features": ["Independent CCT + brightness control"],
-    "image": "assets/img/products/lighting/SC7982-1.jpg"
+    "image": "assets/img/products/lighting/SC7982-1.JPG"
   },
   {
     "id": "SC9563-4",
@@ -509,7 +509,7 @@
     "voltage": "220-240V",
     "applications": ["Living Room", "Open-plan Area", "Boardroom"],
     "features": ["Tunable white", "Full-range dimming", "Floating ring design"],
-    "image": "assets/img/products/lighting/SC9921-1.jpg"
+    "image": "assets/img/products/lighting/SC9921-1.JPG"
   },
   {
     "id": "SC9922-1",
@@ -525,7 +525,7 @@
     "voltage": "220-240V",
     "applications": ["Living Room", "Bedroom", "Dining Area"],
     "features": ["Tunable white", "Full-range dimming", "Floating ring design"],
-    "image": "assets/img/products/lighting/SC9922-1.jpg"
+    "image": "assets/img/products/lighting/SC9922-1.JPG"
   },
   {
     "id": "SC2339-6",
