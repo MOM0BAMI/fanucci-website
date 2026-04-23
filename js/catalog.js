@@ -11,7 +11,7 @@ $(document).ready(function () {
   console.log("DOM ready, attempting to load JSON");
 
   // Use absolute path
-  $.getJSON("/data/lighting.json")
+$.getJSON("/fanucci-website/data/lighting.json")
     .done(function(data) {
       console.log("SUCCESS: JSON loaded, number of products:", data.length);
       products = data;
