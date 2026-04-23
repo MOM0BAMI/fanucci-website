@@ -765,3 +765,55 @@ section {
     background-position: center;
     background-attachment: fixed; /* optional, remove if unwanted */
 }
+
+.navbar-toggler {
+    border-color: rgba(255,255,255,0.3);
+}
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='white' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+.navbar-nav .nav-link {
+    color: white !important;
+}
+.navbar-nav .nav-link:hover {
+    color: var(--accent) !important;
+}
+
+/* Adjust card margins on mobile */
+@media (max-width: 768px) {
+    .product-card {
+        margin-bottom: 20px;
+        padding: 15px;
+    }
+    .product-card h5 {
+        font-size: 1rem;
+    }
+    .product-card p {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-content-custom {
+        width: 95%;
+        margin: 10% auto;
+        padding: 20px;
+        max-height: 85vh;
+    }
+    .modal-content-custom img {
+        max-width: 100%;
+    }
+}
+
+.btn, .category-card, .product-card, .nav-link {
+    touch-action: manipulation; /* improves responsiveness on touch screens */
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 16px; /* instead of browser default */
+    }
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.5rem; }
+    .hero-text h1 { font-size: 2rem; }
+}
