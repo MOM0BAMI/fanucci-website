@@ -7,10 +7,12 @@ let currentFilters = {
   colorTemp: ''
 };
 
+// Data‑URL placeholder (gray box with text)
+const PLACEHOLDER_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23cccccc'/%3E%3Ctext x='50%25' y='50%25' font-size='16' text-anchor='middle' dy='.3em' fill='%23666666'%3ENo Image%3C/text%3E%3C/svg%3E";
+
 $(document).ready(function () {
   console.log("DOM ready, attempting to load JSON");
 
-  // Use absolute path for GitHub Pages
   $.getJSON("/fanucci-website/data/lighting.json")
     .done(function(data) {
       console.log("SUCCESS: JSON loaded, number of products:", data.length);
@@ -24,9 +26,7 @@ $(document).ready(function () {
     });
 
   // Bind filters
-  $("#search").on("keyup", function() {
-    applyFilters();
-  });
+  $("#search").on("keyup", applyFilters);
   $("#categoryFilter").on("change", function() {
     currentFilters.category = $(this).val();
     applyFilters();
@@ -73,15 +73,9 @@ function populateFilterOptions(products) {
 function applyFilters() {
   let filtered = [...products];
   const searchTerm = $("#search").val().toLowerCase();
-  if (searchTerm) {
-    filtered = filtered.filter(p => p.id.toLowerCase().includes(searchTerm));
-  }
-  if (currentFilters.category) {
-    filtered = filtered.filter(p => p.category === currentFilters.category);
-  }
-  if (currentFilters.wattage) {
-    filtered = filtered.filter(p => p.wattage === currentFilters.wattage);
-  }
+  if (searchTerm) filtered = filtered.filter(p => p.id.toLowerCase().includes(searchTerm));
+  if (currentFilters.category) filtered = filtered.filter(p => p.category === currentFilters.category);
+  if (currentFilters.wattage) filtered = filtered.filter(p => p.wattage === currentFilters.wattage);
   if (currentFilters.colorTemp) {
     filtered = filtered.filter(p => {
       if (!p.color_temp) return false;
@@ -103,14 +97,12 @@ function renderProducts(data) {
   }
 
   data.forEach(product => {
-    // Build correct image path from page location (pages/lighting.html)
-    // JSON stores paths like "assets/img/products/lighting/SC5225-C.jpg"
-    // So we need "../" + product.image to go up one level from /pages/
-    let imgPath = "../" + product.image;
+    // Absolute path with repository name
+    let imgPath = "/fanucci-website/" + product.image;
     grid.append(`
       <div class="col-md-4" data-aos="fade-up" data-aos-duration="600">
         <div class="product-card" onclick="openModal('${product.id}')">
-          <img src="${imgPath}" alt="${product.id}" onerror="this.src='../assets/img/placeholder.jpg'">
+          <img src="${imgPath}" alt="${product.id}" onerror="this.src='${PLACEHOLDER_IMG}'">
           <h5>${product.id}</h5>
           <p>${product.short_desc}</p>
           <small>${product.wattage || ''}${product.lumens ? ' | ' + product.lumens : ''}</small>
@@ -119,9 +111,7 @@ function renderProducts(data) {
     `);
   });
 
-  if (typeof AOS !== 'undefined') {
-    AOS.refresh();
-  }
+  if (typeof AOS !== 'undefined') AOS.refresh();
 }
 
 function openModal(id) {
@@ -147,12 +137,12 @@ function openModal(id) {
     appsHtml = `<h5>Applications</h5><ul>${product.applications.map(a => `<li>${a}</li>`).join('')}</ul>`;
   }
 
-  let imgPath = "../" + product.image;
+  let imgPath = "/fanucci-website/" + product.image;
 
   $("#modalBody").html(`
     <h2>${product.id}</h2>
     <p class="text-muted">${product.series || product.category}</p>
-    <img src="${imgPath}" alt="${product.id}" style="width:100%; max-width:400px;" onerror="this.src='../assets/img/placeholder.jpg'">
+    <img src="${imgPath}" alt="${product.id}" style="width:100%; max-width:400px;" onerror="this.src='${PLACEHOLDER_IMG}'">
     <p>${product.description}</p>
     <h5>Specifications</h5>
     <ul>
@@ -186,7 +176,7 @@ function requestQuote(productId) {
   window.location.href = `mailto:sales@fanucci.co.za?subject=${subject}&body=${body}`;
 }
 
-// Optional: fallback for mailto links (if you still want it)
+// Optional: fallback for mailto links
 $(".btn-primary[href^='mailto:']").on("click", function(e) {
     var email = this.href.replace("mailto:", "").split("?")[0];
     setTimeout(function() {
