@@ -192,5 +192,51 @@ $(window).click(function (e) {
 function requestQuote(productId) {
   const subject = encodeURIComponent(`Quote Request: ${productId}`);
   const body = encodeURIComponent(`I would like to request a quote for product ${productId}. Please contact me with pricing and availability.`);
-  window.location.href = `mailto:info@fanucci.co.za?subject=${subject}&body=${body}`;
+  window.location.href = `mailto:sales@fanucci.co.za?subject=${subject}&body=${body}`;
 }
+
+$(".btn-primary[href^='mailto:']").on("click", function(e) {
+    var email = this.href.replace("mailto:", "").split("?")[0];
+    // Try to open mailto, but also offer a fallback
+    setTimeout(function() {
+        if (!window.confirm("Did the email client open?\n\nIf not, you can manually send an email to " + email)) {
+            navigator.clipboard.writeText(email);
+            alert("Email address copied to clipboard: " + email);
+        }
+    }, 100);
+});
+
+// Auto-apply category from URL parameter
+const urlParams = new URLSearchParams(window.location.search);
+const categoryParam = urlParams.get('category');
+if (categoryParam) {
+    // Wait for the page to be ready and filters to be populated
+    $(document).ready(function() {
+        setTimeout(function() {
+            $('#categoryFilter').val(categoryParam).trigger('change');
+        }, 500);
+    });
+}
+
+// Auto-apply category filter from URL parameter
+function applyFilterFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get('category');
+    if (category) {
+        // Wait for the dropdown to exist and the option to be present
+        const interval = setInterval(function() {
+            const $filter = $('#categoryFilter');
+            if ($filter.length && $filter.find('option[value="' + category + '"]').length) {
+                clearInterval(interval);
+                $filter.val(category).trigger('change');
+                console.log('Filter applied:', category);
+            }
+        }, 100);
+        // Safety timeout
+        setTimeout(() => clearInterval(interval), 5000);
+    }
+}
+
+$(document).ready(function() {
+    applyFilterFromURL();
+});

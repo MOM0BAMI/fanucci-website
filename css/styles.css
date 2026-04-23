@@ -670,3 +670,98 @@ section {
         padding: 30px;
     }
 }
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 40px;   /* match your desired size */
+    width: auto;
+    margin-right: 10px;
+}
+
+/* ===== ABOUT PAGE STYLES (scoped) ===== */
+.about-page .about-hero {
+    background: linear-gradient(135deg, var(--primary), var(--dark));
+    padding: 100px 0 80px;
+    text-align: center;
+    color: white;
+}
+.about-page .about-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+.about-page .about-hero p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+.about-page .about-story,
+.about-page .about-commitment {
+    padding: 80px 0;
+}
+.about-page .about-values {
+    background: var(--gray-light);
+    padding: 80px 0;
+}
+.about-page .value-card {
+    background: white;
+    border-radius: 24px;
+    padding: 32px 24px;
+    text-align: center;
+    height: 100%;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+.about-page .value-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+}
+.about-page .value-card i {
+    font-size: 2.5rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+.about-page .value-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+}
+.about-page .value-card p {
+    color: var(--gray);
+    font-size: 0.95rem;
+}
+@media (max-width: 768px) {
+    .about-page .about-hero h1 {
+        font-size: 2.2rem;
+    }
+    .about-page .about-story,
+    .about-page .about-values,
+    .about-page .about-commitment {
+        padding: 50px 0;
+    }
+}
+
+.download-link {
+    color: #ddd;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+}
+.download-link:hover {
+    color: var(--accent);
+}
+.download-link i {
+    font-size: 1.1rem;
+}
+
+/* Hero background image – homepage only (no green tint) */
+.homepage .hero {
+    position: relative;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.85)), url('../assets/img/branding/hero-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* optional, remove if unwanted */
+}
