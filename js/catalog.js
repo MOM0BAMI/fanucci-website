@@ -10,8 +10,8 @@ let currentFilters = {
 $(document).ready(function () {
   console.log("DOM ready, attempting to load JSON");
 
-  // Use absolute path
-$.getJSON("/fanucci-website/data/lighting.json")
+  // Use absolute path for GitHub Pages
+  $.getJSON("/fanucci-website/data/lighting.json")
     .done(function(data) {
       console.log("SUCCESS: JSON loaded, number of products:", data.length);
       products = data;
@@ -25,7 +25,6 @@ $.getJSON("/fanucci-website/data/lighting.json")
 
   // Bind filters
   $("#search").on("keyup", function() {
-    console.log("Search triggered");
     applyFilters();
   });
   $("#categoryFilter").on("change", function() {
@@ -72,20 +71,16 @@ function populateFilterOptions(products) {
 }
 
 function applyFilters() {
-  console.log("Applying filters");
   let filtered = [...products];
   const searchTerm = $("#search").val().toLowerCase();
   if (searchTerm) {
     filtered = filtered.filter(p => p.id.toLowerCase().includes(searchTerm));
-    console.log("Search filter applied, remaining:", filtered.length);
   }
   if (currentFilters.category) {
     filtered = filtered.filter(p => p.category === currentFilters.category);
-    console.log("Category filter applied, remaining:", filtered.length);
   }
   if (currentFilters.wattage) {
     filtered = filtered.filter(p => p.wattage === currentFilters.wattage);
-    console.log("Wattage filter applied, remaining:", filtered.length);
   }
   if (currentFilters.colorTemp) {
     filtered = filtered.filter(p => {
@@ -93,7 +88,6 @@ function applyFilters() {
       if (Array.isArray(p.color_temp)) return p.color_temp.includes(currentFilters.colorTemp);
       return p.color_temp === currentFilters.colorTemp;
     });
-    console.log("Color temp filter applied, remaining:", filtered.length);
   }
   renderProducts(filtered);
 }
@@ -109,16 +103,14 @@ function renderProducts(data) {
   }
 
   data.forEach(product => {
-    // Ensure image path is correct: from root, so remove "../" if using absolute path
-    let imgPath = product.image;
-    if (imgPath && !imgPath.startsWith("/")) {
-      // If relative, prepend "/" to make it absolute from root
-      imgPath = "/" + imgPath;
-    }
+    // Build correct image path from page location (pages/lighting.html)
+    // JSON stores paths like "assets/img/products/lighting/SC5225-C.jpg"
+    // So we need "../" + product.image to go up one level from /pages/
+    let imgPath = "../" + product.image;
     grid.append(`
       <div class="col-md-4" data-aos="fade-up" data-aos-duration="600">
         <div class="product-card" onclick="openModal('${product.id}')">
-          <img src="${imgPath}" alt="${product.id}" onerror="this.src='/assets/img/placeholder.jpg'">
+          <img src="${imgPath}" alt="${product.id}" onerror="this.src='../assets/img/placeholder.jpg'">
           <h5>${product.id}</h5>
           <p>${product.short_desc}</p>
           <small>${product.wattage || ''}${product.lumens ? ' | ' + product.lumens : ''}</small>
@@ -155,13 +147,12 @@ function openModal(id) {
     appsHtml = `<h5>Applications</h5><ul>${product.applications.map(a => `<li>${a}</li>`).join('')}</ul>`;
   }
 
-  let imgPath = product.image;
-  if (imgPath && !imgPath.startsWith("/")) imgPath = "/" + imgPath;
+  let imgPath = "../" + product.image;
 
   $("#modalBody").html(`
     <h2>${product.id}</h2>
     <p class="text-muted">${product.series || product.category}</p>
-    <img src="${imgPath}" alt="${product.id}" style="width:100%; max-width:400px;" onerror="this.src='/assets/img/placeholder.jpg'">
+    <img src="${imgPath}" alt="${product.id}" style="width:100%; max-width:400px;" onerror="this.src='../assets/img/placeholder.jpg'">
     <p>${product.description}</p>
     <h5>Specifications</h5>
     <ul>
@@ -195,9 +186,9 @@ function requestQuote(productId) {
   window.location.href = `mailto:sales@fanucci.co.za?subject=${subject}&body=${body}`;
 }
 
+// Optional: fallback for mailto links (if you still want it)
 $(".btn-primary[href^='mailto:']").on("click", function(e) {
     var email = this.href.replace("mailto:", "").split("?")[0];
-    // Try to open mailto, but also offer a fallback
     setTimeout(function() {
         if (!window.confirm("Did the email client open?\n\nIf not, you can manually send an email to " + email)) {
             navigator.clipboard.writeText(email);
@@ -206,24 +197,11 @@ $(".btn-primary[href^='mailto:']").on("click", function(e) {
     }, 100);
 });
 
-// Auto-apply category from URL parameter
-const urlParams = new URLSearchParams(window.location.search);
-const categoryParam = urlParams.get('category');
-if (categoryParam) {
-    // Wait for the page to be ready and filters to be populated
-    $(document).ready(function() {
-        setTimeout(function() {
-            $('#categoryFilter').val(categoryParam).trigger('change');
-        }, 500);
-    });
-}
-
 // Auto-apply category filter from URL parameter
 function applyFilterFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     const category = urlParams.get('category');
     if (category) {
-        // Wait for the dropdown to exist and the option to be present
         const interval = setInterval(function() {
             const $filter = $('#categoryFilter');
             if ($filter.length && $filter.find('option[value="' + category + '"]').length) {
@@ -232,7 +210,6 @@ function applyFilterFromURL() {
                 console.log('Filter applied:', category);
             }
         }, 100);
-        // Safety timeout
         setTimeout(() => clearInterval(interval), 5000);
     }
 }
