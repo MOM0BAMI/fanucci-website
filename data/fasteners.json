@@ -1,19 +1,19 @@
 [
   {
-    "id": "DRY-32-13",
+    "id": "Drywall Screws",
     "category": "Screws",
     "series": "Drywall Screws",
     "short_desc": "Drywall Screws – Phillips Bugle Head",
     "description": "Self-tapping, fine thread drywall screws for fixing plasterboard to metal or timber studs. Bugle head for flush finishing.",
-    "wattage": "3.5 x 32mm",
+    "wattage": "All Sizes Available",
     "lumens": "Case hardened steel",
     "color_temp": ["Phosphate", "Black", "Zinc"],
-    "dimensions": "3.5mm diameter, 32mm length",
+    "dimensions": "Depending On Size",
     "material": "Carbon steel, case hardened",
     "voltage": "Sharp point, fine thread",
     "applications": ["Drywall installation", "Plasterboard to metal studs", "Plasterboard to timber"],
     "features": ["Bugle head", "Self-tapping", "Twin thread design"],
-    "image": "assets/img/products/fasteners/DRY-32-13.jpg"
+    "image": "assets/img/products/fasteners/drywall screw.jpg"
   },
   {
     "id": "CHIP-40-16",
