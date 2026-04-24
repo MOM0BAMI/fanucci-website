@@ -7,21 +7,27 @@ let currentFilters = {
   colorTemp: ''
 };
 
-// Data‑URL placeholder for missing images
 const PLACEHOLDER_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23cccccc'/%3E%3Ctext x='50%25' y='50%25' font-size='16' text-anchor='middle' dy='.3em' fill='%23666666'%3ENo Image%3C/text%3E%3C/svg%3E";
 
-// Determine which JSON to load based on the current page
+function isFastenersPage() {
+  return window.location.pathname.includes('fasteners.html');
+}
+
 function getJsonPath() {
-  const path = window.location.pathname;
-  if (path.includes('fasteners.html')) {
+  if (isFastenersPage()) {
     return "/fanucci-website/data/fasteners.json";
   }
-  // Default to lighting
   return "/fanucci-website/data/lighting.json";
 }
 
 $(document).ready(function () {
   console.log("DOM ready, loading JSON from:", getJsonPath());
+
+  // Update filter group labels for fasteners page
+  if (isFastenersPage()) {
+    $("#wattageFilter").parent().find("label").text("Size / Grade");
+    $("#colorTempFilter").parent().find("label").text("Material / Finish");
+  }
 
   $.getJSON(getJsonPath())
     .done(function(data) {
@@ -35,7 +41,6 @@ $(document).ready(function () {
       $("#productGrid").html('<div class="col-12 text-center"><p class="text-danger">Error loading product data. Check console.</p></div>');
     });
 
-  // Bind filters
   $("#search").on("keyup", applyFilters);
   $("#categoryFilter").on("change", function() {
     currentFilters.category = $(this).val();
@@ -68,13 +73,13 @@ function populateFilterOptions(products) {
   });
 
   const wattageSelect = $("#wattageFilter");
-  wattageSelect.empty().append('<option value="">All Wattages</option>');
+  wattageSelect.empty().append('<option value="">All</option>');
   Array.from(wattages).sort().forEach(w => {
     wattageSelect.append(`<option value="${w}">${w}</option>`);
   });
 
   const colorTempSelect = $("#colorTempFilter");
-  colorTempSelect.empty().append('<option value="">All Colour Temperatures</option>');
+  colorTempSelect.empty().append('<option value="">All</option>');
   Array.from(colorTemps).sort().forEach(ct => {
     colorTempSelect.append(`<option value="${ct}">${ct}</option>`);
   });
@@ -107,7 +112,6 @@ function renderProducts(data) {
   }
 
   data.forEach(product => {
-    // Build absolute image path
     let imgPath = "/fanucci-website/" + product.image;
     grid.append(`
       <div class="col-md-4" data-aos="fade-up" data-aos-duration="600">
@@ -120,7 +124,6 @@ function renderProducts(data) {
       </div>
     `);
   });
-
   if (typeof AOS !== 'undefined') AOS.refresh();
 }
 
@@ -128,13 +131,37 @@ function openModal(id) {
   let product = products.find(p => p.id === id);
   if (!product) return;
 
-  let colorTempHtml = '';
-  if (product.color_temp) {
-    if (Array.isArray(product.color_temp)) {
-      colorTempHtml = `<li><strong>Colour Temperature:</strong> ${product.color_temp.join(' / ')}</li>`;
-    } else {
-      colorTempHtml = `<li><strong>Colour Temperature:</strong> ${product.color_temp}</li>`;
+  let isFastener = isFastenersPage();
+
+  // Build dynamic specification list based on product type
+  let specsHtml = '';
+  if (isFastener) {
+    specsHtml = `
+      <li><strong>Size / Grade:</strong> ${product.wattage || 'N/A'}</li>
+      <li><strong>Material / Finish:</strong> ${product.lumens || 'N/A'}</li>
+      ${product.color_temp ? `<li><strong>Finish Option:</strong> ${Array.isArray(product.color_temp) ? product.color_temp.join(' / ') : product.color_temp}</li>` : ''}
+      <li><strong>Drive / Type:</strong> ${product.voltage || 'N/A'}</li>
+      <li><strong>Dimensions:</strong> ${product.dimensions || 'N/A'}</li>
+      <li><strong>Material:</strong> ${product.material || 'N/A'}</li>
+    `;
+  } else {
+    // Lighting page original
+    let colorTempHtml = '';
+    if (product.color_temp) {
+      if (Array.isArray(product.color_temp)) {
+        colorTempHtml = `<li><strong>Colour Temperature:</strong> ${product.color_temp.join(' / ')}</li>`;
+      } else {
+        colorTempHtml = `<li><strong>Colour Temperature:</strong> ${product.color_temp}</li>`;
+      }
     }
+    specsHtml = `
+      <li><strong>Wattage:</strong> ${product.wattage || 'N/A'}</li>
+      <li><strong>Lumens:</strong> ${product.lumens || 'N/A'}</li>
+      ${colorTempHtml}
+      <li><strong>Dimensions:</strong> ${product.dimensions || 'N/A'}</li>
+      <li><strong>Material:</strong> ${product.material || 'N/A'}</li>
+      <li><strong>Voltage:</strong> ${product.voltage || '220-240V'}</li>
+    `;
   }
 
   let featuresHtml = '';
@@ -156,12 +183,7 @@ function openModal(id) {
     <p>${product.description}</p>
     <h5>Specifications</h5>
     <ul>
-      <li><strong>Wattage:</strong> ${product.wattage || 'N/A'}</li>
-      <li><strong>Lumens:</strong> ${product.lumens || 'N/A'}</li>
-      ${colorTempHtml}
-      <li><strong>Dimensions:</strong> ${product.dimensions || 'N/A'}</li>
-      <li><strong>Material:</strong> ${product.material || 'N/A'}</li>
-      <li><strong>Voltage:</strong> ${product.voltage || '220-240V'}</li>
+      ${specsHtml}
     </ul>
     ${featuresHtml}
     ${appsHtml}
@@ -171,6 +193,7 @@ function openModal(id) {
   $("#productModal").fadeIn(300);
 }
 
+// Rest of the functions unchanged (close modal, quote, URL filter)...
 $(".close-btn").click(function () {
   $("#productModal").fadeOut(300);
 });
@@ -186,7 +209,6 @@ function requestQuote(productId) {
   window.location.href = `mailto:sales@fanucci.co.za?subject=${subject}&body=${body}`;
 }
 
-// Auto-apply category filter from URL parameter
 function applyFilterFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const category = urlParams.get('category');
