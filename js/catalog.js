@@ -7,13 +7,23 @@ let currentFilters = {
   colorTemp: ''
 };
 
-// Data‑URL placeholder (gray box with text)
+// Data‑URL placeholder for missing images
 const PLACEHOLDER_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23cccccc'/%3E%3Ctext x='50%25' y='50%25' font-size='16' text-anchor='middle' dy='.3em' fill='%23666666'%3ENo Image%3C/text%3E%3C/svg%3E";
 
-$(document).ready(function () {
-  console.log("DOM ready, attempting to load JSON");
+// Determine which JSON to load based on the current page
+function getJsonPath() {
+  const path = window.location.pathname;
+  if (path.includes('fasteners.html')) {
+    return "/fanucci-website/data/fasteners.json";
+  }
+  // Default to lighting
+  return "/fanucci-website/data/lighting.json";
+}
 
-  $.getJSON("/fanucci-website/data/lighting.json")
+$(document).ready(function () {
+  console.log("DOM ready, loading JSON from:", getJsonPath());
+
+  $.getJSON(getJsonPath())
     .done(function(data) {
       console.log("SUCCESS: JSON loaded, number of products:", data.length);
       products = data;
@@ -97,12 +107,12 @@ function renderProducts(data) {
   }
 
   data.forEach(product => {
-    // Absolute path with repository name
+    // Build absolute image path
     let imgPath = "/fanucci-website/" + product.image;
     grid.append(`
       <div class="col-md-4" data-aos="fade-up" data-aos-duration="600">
         <div class="product-card" onclick="openModal('${product.id}')">
-          <img src="${imgPath}" alt="${product.id}" onerror="this.src='${PLACEHOLDER_IMG}'">
+          <img src="${imgPath}" alt="${product.id}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
           <h5>${product.id}</h5>
           <p>${product.short_desc}</p>
           <small>${product.wattage || ''}${product.lumens ? ' | ' + product.lumens : ''}</small>
@@ -176,34 +186,23 @@ function requestQuote(productId) {
   window.location.href = `mailto:sales@fanucci.co.za?subject=${subject}&body=${body}`;
 }
 
-// Optional: fallback for mailto links
-$(".btn-primary[href^='mailto:']").on("click", function(e) {
-    var email = this.href.replace("mailto:", "").split("?")[0];
-    setTimeout(function() {
-        if (!window.confirm("Did the email client open?\n\nIf not, you can manually send an email to " + email)) {
-            navigator.clipboard.writeText(email);
-            alert("Email address copied to clipboard: " + email);
-        }
-    }, 100);
-});
-
 // Auto-apply category filter from URL parameter
 function applyFilterFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const category = urlParams.get('category');
-    if (category) {
-        const interval = setInterval(function() {
-            const $filter = $('#categoryFilter');
-            if ($filter.length && $filter.find('option[value="' + category + '"]').length) {
-                clearInterval(interval);
-                $filter.val(category).trigger('change');
-                console.log('Filter applied:', category);
-            }
-        }, 100);
-        setTimeout(() => clearInterval(interval), 5000);
-    }
+  const urlParams = new URLSearchParams(window.location.search);
+  const category = urlParams.get('category');
+  if (category) {
+    const interval = setInterval(function() {
+      const $filter = $('#categoryFilter');
+      if ($filter.length && $filter.find('option[value="' + category + '"]').length) {
+        clearInterval(interval);
+        $filter.val(category).trigger('change');
+        console.log('Filter applied:', category);
+      }
+    }, 100);
+    setTimeout(() => clearInterval(interval), 5000);
+  }
 }
 
 $(document).ready(function() {
-    applyFilterFromURL();
+  applyFilterFromURL();
 });

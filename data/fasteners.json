@@ -1,0 +1,50 @@
+[
+  {
+    "id": "HEX-M10-50",
+    "category": "Bolts",
+    "series": "Hex Head Bolts",
+    "short_desc": "M10 x 50mm Hex Bolt",
+    "description": "Grade 8.8 zinc-plated hex head bolt. Suitable for general engineering and construction applications.",
+    "wattage": "M10 x 50mm",
+    "lumens": "Grade 8.8",
+    "color_temp": ["Zinc", "Plain"],
+    "dimensions": "M10 x 50mm",
+    "material": "Carbon steel, zinc plated",
+    "voltage": "N/A",
+    "applications": ["Structural steel", "Machinery assembly", "General fastening"],
+    "features": ["Grade 8.8", "Corrosion resistant"],
+    "image": "assets/img/products/fasteners/HEX-M10-50.jpg"
+  },
+  {
+    "id": "NYL-NUT-M8",
+    "category": "Nuts",
+    "series": "Nylon Lock Nuts",
+    "short_desc": "M8 Nylon Insert Lock Nut",
+    "description": "Self-locking nut with nylon insert. Prevents loosening under vibration.",
+    "wattage": "M8",
+    "lumens": "Self-locking",
+    "color_temp": ["Zinc"],
+    "dimensions": "M8",
+    "material": "Carbon steel, zinc plated with nylon insert",
+    "voltage": "N/A",
+    "applications": ["Automotive", "Industrial machinery", "Vibration-prone assemblies"],
+    "features": ["Self-locking", "Reusable"],
+    "image": "assets/img/products/fasteners/NYL-NUT-M8.jpg"
+  },
+  {
+    "id": "FLAT-W-M12",
+    "category": "Washers",
+    "series": "Flat Washers",
+    "short_desc": "M12 Flat Washer",
+    "description": "Standard flat washer for M12 bolts. Distributes load and prevents surface damage.",
+    "wattage": "M12",
+    "lumens": "Standard",
+    "color_temp": ["Bright Zinc"],
+    "dimensions": "M12",
+    "material": "Carbon steel",
+    "voltage": "N/A",
+    "applications": ["General fastening", "Load distribution"],
+    "features": ["Zinc plated", "DIN standard"],
+    "image": "assets/img/products/fasteners/FLAT-W-M12.jpg"
+  }
+]
